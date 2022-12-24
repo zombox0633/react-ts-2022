@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState,useCallback, useRef } from 'react'
 import reactLogo from './assets/react.svg'
 import PersonProvider from './context/PersonProvider'
 import Header from './components/Header'
@@ -16,7 +16,31 @@ function App() {
   //     age:20
   //   }
   // ])
+
+  const [height, setHeight] = useState<number>(0)
+  const [weight, setWeight] = useState<number>(0)
+
+  const handleSetWeight = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setWeight(+e.target.value)
+  }
+  const handleSetHeight = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setHeight(+e.target.value)
+  }
+
+  const handleCalculateBMI = () =>{
+    const result = weight/((height/100)*2)
+    console.log(result);
+    
+  }
+
+  const handleCalculateBMIWithUseCallBack = useCallback(() => {
+    const result = weight/((height/100)^2)
+    console.log('useCallback',result);
+    },
+    [height,weight],
+  )
   
+
   return (
     <PersonProvider>
       <div>
@@ -34,6 +58,24 @@ function App() {
           </code>
         </pre>
       </div>
+        <form 
+          onSubmit={(e)=>{
+          e.preventDefault()
+          handleCalculateBMI()
+          handleCalculateBMIWithUseCallBack()
+        }}>
+          <input 
+          type="text" 
+          value={weight}
+          onChange={handleSetWeight}
+          />
+          <input 
+          type="text" 
+          value={height}
+          onChange={handleSetHeight}
+          />
+          <button type='submit'>add</button>
+        </form>
       </div>
     </PersonProvider>
   )
